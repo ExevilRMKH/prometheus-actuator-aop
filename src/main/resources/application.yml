@@ -1,4 +1,12 @@
+spring:
+  jmx:
+    enabled: true
+    unique-names: true
 management:
+  datadog:
+    metrics:
+      export:
+        enabled: true
   info:
     env:
       enabled: true
