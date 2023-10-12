@@ -2,7 +2,17 @@ spring:
   jmx:
     enabled: true
     unique-names: true
+  boot:
+    admin:
+      client:
+        url: "http://localhost:8081"
+        instance:
+          name: "@project.artifactId@"
+        enabled: true
 management:
+  health:
+    diskspace:
+      enabled: true
   datadog:
     metrics:
       export:
@@ -21,11 +31,9 @@ management:
       enabled: true
   endpoint:
     health:
-      group:
-        custom:
-          include: "*"
-          show-components: always
-          show-details: always
+      show-details: always
+      probes:
+        enabled: true
     info:
       enabled: true
     env:
@@ -39,9 +47,15 @@ management:
     jmx:
       exposure:
         include: "*"
+  metrics:
+    enable:
+      spring: true
 info:
   app:
     encoding: "@project.build.sourceEncoding@"
     java:
       source: "@java.version@"
       target: "@java.version@"
+server:
+  address: "localhost"
+  port: 8080
