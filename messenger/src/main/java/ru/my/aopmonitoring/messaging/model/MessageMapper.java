@@ -1,11 +1,9 @@
-package ru.my.aopmonitoring.messaging.domain;
+package ru.my.aopmonitoring.messaging.model;
 
-import io.micrometer.observation.annotation.Observed;
-import org.springframework.stereotype.Service;
 import ru.my.aopmonitoring.messaging.model.MessageDTO;
 import ru.my.aopmonitoring.messaging.model.MessageEntity;
 
-public class Message {
+public class MessageMapper {
     public static MessageDTO fromEntityToDTO(MessageEntity entity){
         return MessageDTO
                 .builder()

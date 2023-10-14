@@ -1,4 +1,4 @@
-package ru.my.aopmonitoring.adapters.persistents;
+package ru.my.aopmonitoring.adapters.persistents.inmemory;
 
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
-@Observed(name = "message-repository")
+@Observed(name = "message.repository")
 public class MessageEntityRepositoryImpl implements MessageEntityRepository {
     private final MessageTable table;
 
@@ -31,10 +31,16 @@ public class MessageEntityRepositoryImpl implements MessageEntityRepository {
     }
 
     public List<MessageEntity> getAllByUuid(String uuid){
-        return table.getMessageEntities()
+        var list = table.getMessageEntities()
                 .values()
                 .stream()
                 .filter(message -> uuid.equals(message.getUuidSender()) || uuid.equals(message.getUuidRecipient()))
                 .toList();
+
+        if(list.isEmpty()){
+            throw new RuntimeException("");
+        }
+        
+        return list;
     }
 }

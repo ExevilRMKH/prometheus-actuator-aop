@@ -1,4 +1,4 @@
-package ru.my.aopmonitoring.adapters.persistents;
+package ru.my.aopmonitoring.adapters.persistents.inmemory;
 
 import org.springframework.stereotype.Repository;
 import ru.my.aopmonitoring.messaging.model.MessageEntity;

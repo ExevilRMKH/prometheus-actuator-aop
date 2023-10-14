@@ -3,8 +3,8 @@ package ru.my.aopmonitoring.app.query;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.my.aopmonitoring.adapters.persistents.MessageEntityRepository;
-import ru.my.aopmonitoring.messaging.domain.Message;
+import ru.my.aopmonitoring.adapters.persistents.inmemory.MessageEntityRepository;
+import ru.my.aopmonitoring.messaging.model.MessageMapper;
 import ru.my.aopmonitoring.messaging.model.MessageDTO;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class QueryMessagesImpl implements QueryMessages{
         return repository
                 .getAllByUuid(uuid)
                 .stream()
-                .map(Message::fromEntityToDTO)
+                .map(MessageMapper::fromEntityToDTO)
                 .collect(Collectors.toList());
     }
 

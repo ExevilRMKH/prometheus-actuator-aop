@@ -56,6 +56,6 @@ info:
     java:
       source: "@java.version@"
       target: "@java.version@"
-server:
-  address: "localhost"
-  port: 8080
+#server:
+#  address: "10.5.0.4"
+#  port: 8082

@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 1m
+
+scrape_configs:
+  - job_name: 'messenger-java17'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['10.5.0.3:8090']
