@@ -7,16 +7,34 @@ services:
     container_name: mongo
     restart: always
     expose:
-      - 27017
+      - 27018
     ports:
-      - 27017:27017
+      - 27018:27018
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.0.2
+    volumes:
+      - ./data/mongo:/data/db
+      - ./data/mongo:/data/configdb
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=1234
-      - MONGO_INITDB_DATABASE=mydb
+      - MONGO_INITDB_DATABASE=messenger
+  postgresql:
+    image: postgres
+    restart: always
+    expose:
+      - 5433
+    ports:
+      - 5433:5433
+    networks:
+      lan-java-mongo-prometheus-grafana:
+        ipv4_address: 10.5.0.7
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: manager
+      POSTGRES_DB: user_manager
+    command: -p 5433
   messenger:
     image: messenger-java17:0.0.1-SNAPSHOT
     restart: always

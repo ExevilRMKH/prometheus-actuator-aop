@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.my.messenger.app.query.QueryMessages;
-import ru.my.messenger.messaging.model.dto.MessageDTO;
+import ru.my.messenger.messenger.model.dto.MessageDTO;
 
 import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 

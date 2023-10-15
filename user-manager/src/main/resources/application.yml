@@ -1,1 +1,23 @@
-
+spring:
+  datasource:
+    username: manager
+    password: 1234
+    hikari:
+      connection-timeout: 50000
+      idle-timeout: 300000
+      max-lifetime: 900000
+      maximum-pool-size: 3
+      minimum-idle: 1
+      pool-name: UserManagerPool
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://10.5.0.7:5433/user_manager"
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      connection:
+        provider_class: "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
+    show-sql: true

@@ -6,8 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.my.messenger.app.command.CommandChannel;
 import ru.my.messenger.app.query.QueryChannel;
-import ru.my.messenger.messaging.model.dto.ChannelDTO;
-import ru.my.messenger.messaging.model.dto.MessageDTO;
+import ru.my.messenger.messenger.model.dto.ChannelDTO;
 
 import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 

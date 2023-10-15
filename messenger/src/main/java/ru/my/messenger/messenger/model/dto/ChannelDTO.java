@@ -1,4 +1,4 @@
-package ru.my.messenger.messager.model.dto;
+package ru.my.messenger.messenger.model.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package ru.my.messenger.adapters.persistents.mongo;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import reactor.core.publisher.Flux;
-import ru.my.messenger.messaging.model.entity.MessageEntity;
+import ru.my.messenger.messenger.model.entity.MessageEntity;
 
 @EnableReactiveMongoRepositories
 public interface MessagesRepository extends ReactiveMongoRepository<MessageEntity, String> {

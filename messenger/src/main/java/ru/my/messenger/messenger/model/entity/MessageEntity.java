@@ -1,4 +1,4 @@
-package ru.my.messenger.messager.model.entity;
+package ru.my.messenger.messenger.model.entity;
 
 import lombok.Builder;
 import lombok.Getter;

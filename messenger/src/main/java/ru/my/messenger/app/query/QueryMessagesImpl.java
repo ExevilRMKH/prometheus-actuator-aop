@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.my.messenger.adapters.persistents.mongo.MessagesRepository;
-import ru.my.messenger.messaging.model.mappers.MessageMapper;
-import ru.my.messenger.messaging.model.dto.MessageDTO;
+import ru.my.messenger.messenger.model.mappers.MessageMapper;
+import ru.my.messenger.messenger.model.dto.MessageDTO;
 
 @RequiredArgsConstructor
 @Service

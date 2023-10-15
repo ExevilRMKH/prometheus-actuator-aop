@@ -1,7 +1,7 @@
-package ru.my.messenger.messager.model.mappers;
+package ru.my.messenger.messenger.model.mappers;
 
-import ru.my.messenger.messager.model.dto.ChannelDTO;
-import ru.my.messenger.messager.model.entity.ChannelEntity;
+import ru.my.messenger.messenger.model.dto.ChannelDTO;
+import ru.my.messenger.messenger.model.entity.ChannelEntity;
 
 public class ChannelMapper {
     public static ChannelDTO fromEntityToDTO(ChannelEntity entity){

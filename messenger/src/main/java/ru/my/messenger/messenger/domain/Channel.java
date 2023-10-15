@@ -1,4 +1,4 @@
-    package ru.my.messenger.messager.domain;
+    package ru.my.messenger.messenger.domain;
 
 public class Channel {
 }
