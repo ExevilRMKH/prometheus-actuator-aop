@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     username: manager
@@ -21,3 +22,9 @@ spring:
       connection:
         provider_class: "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
     show-sql: true
+jwt:
+  secret:
+    access: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w=="
+    life-time: 10
+server:
+  port: 8083

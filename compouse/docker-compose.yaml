@@ -2,6 +2,7 @@
 version: '3.1'
 
 services:
+#PERSISTENT STORAGE
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -29,12 +30,49 @@ services:
       - 5433:5433
     networks:
       lan-java-mongo-prometheus-grafana:
-        ipv4_address: 10.5.0.7
+        ipv4_address: 10.5.0.3
     environment:
       POSTGRES_PASSWORD: 1234
       POSTGRES_USER: manager
       POSTGRES_DB: user_manager
     command: -p 5433
+#MONITORING
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana
+    restart: unless-stopped
+    user: "0"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./data/grafana:/etc/grafana/provisioning/
+    expose:
+      - 3000
+    ports:
+      - '3000:3000'
+    networks:
+      lan-java-mongo-prometheus-grafana:
+        ipv4_address: 10.5.1.1
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=1234
+      - GF_SECURITY_ADMIN_USER=admin
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./data/prometheus:/etc/prometheus/
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      lan-java-mongo-prometheus-grafana:
+        ipv4_address: 10.5.1.2
+#APPLICATION
   messenger:
     image: messenger-java17:0.0.1-SNAPSHOT
     restart: always
@@ -59,7 +97,32 @@ services:
       - 8090:8090
     networks:
       lan-java-mongo-prometheus-grafana:
-        ipv4_address: 10.5.0.3
+        ipv4_address: 10.5.2.1
+  user-manger:
+    image: user-manger-java17:0.0.1-SNAPSHOT
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '200M'
+    environment:
+      SERVER_ADDRESS: "10.5.0.3"
+      SERVER_PORT: "8081"
+      MANAGEMENT_SERVER_PORT: "8090"
+      SPRING_PROFILES_ACTIVE: "DEV"
+      SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.0.4:8082"
+      SPRING_BOOT_ADMIN_CLIENT_INSTACE_NAME: "@project.artifactId@"
+      SPRING_BOOT_ADMIN_CLIENT_INSTACE_ENABLED: "true"
+    expose:
+      - 8082
+      - 8090
+    ports:
+      - 8082:8082
+      - 8090:8090
+    networks:
+      lan-java-mongo-prometheus-grafana:
+        ipv4_address: 10.5.2.2
   spring-boot-admin:
     image: spring-boot-admin-java17:0.0.1-SNAPSHOT
     restart: always
@@ -69,51 +132,16 @@ services:
           cpus: '0.5'
           memory: '200M'
     expose:
-      - 8082
+      - 8083
     ports:
-      - 8082:8082
+      - 8083:8083
+      - 8090:8090
     networks:
       lan-java-mongo-prometheus-grafana:
-        ipv4_address: 10.5.0.4
+        ipv4_address: 10.5.2.3
     environment:
-      SERVER_ADDRESS: "10.5.0.4"
+      SERVER_ADDRESS: "10.5.2.2"
       SERVER_PORT: "8082"
-  grafana:
-    image: grafana/grafana-enterprise:latest
-    container_name: grafana
-    restart: unless-stopped
-    user: "0"
-    volumes:
-      - ./data/grafana:/var/lib/grafana
-      - ./data/grafana:/etc/grafana/provisioning/
-    expose:
-      - 3000
-    ports:
-      - '3000:3000'
-    networks:
-      lan-java-mongo-prometheus-grafana:
-        ipv4_address: 10.5.0.5
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=1234
-      - GF_SECURITY_ADMIN_USER=admin
-  prometheus:
-    image: prom/prometheus:latest
-    volumes:
-      - ./data/prometheus:/etc/prometheus/
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    container_name: prometheus
-    hostname: prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    ports:
-      - 9090:9090
-    restart: unless-stopped
-    environment:
-      TZ: "Europe/Moscow"
-    networks:
-      lan-java-mongo-prometheus-grafana:
-        ipv4_address: 10.5.0.6
-
 networks:
   lan-java-mongo-prometheus-grafana:
     driver: bridge

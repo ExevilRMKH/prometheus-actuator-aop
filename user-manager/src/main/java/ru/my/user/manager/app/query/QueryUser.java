@@ -9,5 +9,6 @@ import java.util.UUID;
 public interface QueryUser {
     Flux<UserDTO> getAll();
     Mono<UserDTO> getById(UUID uuid);
-    Mono<String> getTokenByLogin(String uuid);
+    String getTokenByLoginAndUuid(String login,UUID uuid);
+    void validateToken(UUID uuid, String token);
 }

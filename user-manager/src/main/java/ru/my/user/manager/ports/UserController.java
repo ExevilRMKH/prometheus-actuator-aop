@@ -2,10 +2,7 @@ package ru.my.user.manager.ports;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.my.user.manager.app.command.CommandUser;
@@ -26,13 +23,33 @@ public class UserController {
     }
 
     @GetMapping("/{uuid}")
-    public Mono<UserDTO> getUserById(@PathVariable UUID uuid){
-        return query.getById(uuid);
+    public Mono<UserDTO> getUserById(@PathVariable String uuid){
+        return query.getById(UUID.fromString(uuid));
     }
 
-    @GetMapping("/token/{login}")
-    public Mono<String> getUserById(@PathVariable String login){
-        return query.getTokenByLogin(login);
+    @PostMapping
+    public void add(@RequestBody UserDTO dto){
+        command.add(dto);
+    }
+
+    @PutMapping
+    public void update(@RequestBody UserDTO dto){
+        command.update(dto);
+    }
+
+    @DeleteMapping("/{uuid}")
+    public void deleteById(@PathVariable String uuid){
+        command.delete(UUID.fromString(uuid));
+    }
+
+    @GetMapping("/token/{login}/{uuid}")
+    public String getToken(@PathVariable String login, @PathVariable String uuid){
+        return query.getTokenByLoginAndUuid(login, UUID.fromString(uuid));
+    }
+
+    @GetMapping("/validate/{uuid}/{token}")
+    public void tokenValidate(@PathVariable String uuid, @PathVariable String token){
+        query.validateToken(UUID.fromString(uuid), token);
     }
 
 }

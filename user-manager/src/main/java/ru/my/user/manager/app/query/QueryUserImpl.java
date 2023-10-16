@@ -7,15 +7,21 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import ru.my.user.manager.adapters.persistents.UserRepository;
 import ru.my.user.manager.app.exception.NotFoundException;
+import ru.my.user.manager.app.exception.UserManagerException;
+import ru.my.user.manager.users.domain.UserManager;
 import ru.my.user.manager.users.model.dto.UserDTO;
 import ru.my.user.manager.users.model.mapper.UserMapper;
 
 import java.util.UUID;
 
+import static ru.my.user.manager.app.exception.ExceptionMessages.INVALID_TOKEN;
+import static ru.my.user.manager.app.exception.ExceptionMessages.NOT_USER_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class QueryUserImpl implements QueryUser{
     private final UserRepository repository;
+    private final UserManager manager;
     @Override
     public Flux<UserDTO> getAll() {
         return Flux.fromStream(() -> repository.findAll().stream().map(UserMapper::fromEntityToDTO));
@@ -26,13 +32,31 @@ public class QueryUserImpl implements QueryUser{
         return Mono.fromCallable(() ->
                 repository
                         .findById(uuid)
-                        .orElseThrow(() -> new NotFoundException("User not found")))
+                        .orElseThrow(() -> new NotFoundException(NOT_USER_FOUND)))
                 .map(UserMapper::fromEntityToDTO)
                 .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<String> getTokenByLogin(String uuid) {
-        return null;
+    public String getTokenByLoginAndUuid(String login, UUID uuid) {
+        var entity = repository
+                .findById(uuid)
+                .orElseThrow(() -> new NotFoundException(NOT_USER_FOUND));
+
+        if(entity.getLogin().equals(login))
+            return manager.getToken(entity);
+
+        throw new UserManagerException(NOT_USER_FOUND);
+    }
+
+    @Override
+    public void validateToken(UUID uuid, String token) {
+        if(repository.findById(uuid).isEmpty())
+            throw new NotFoundException(NOT_USER_FOUND);
+
+        if(manager.validateToken(token))
+            return;
+
+        throw new UserManagerException(INVALID_TOKEN);
     }
 }
