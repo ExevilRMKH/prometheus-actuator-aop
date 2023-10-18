@@ -18,12 +18,15 @@ services:
       - ./data/mongo:/data/db
       - ./data/mongo:/data/configdb
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=1234
-      - MONGO_INITDB_DATABASE=messenger
+      MONGODB_USER: "admin"
+      MONGODB_PASS: "1234"
+      MONGODB_DATABASE: "messenger"
+    command: mongod --port 27018
   postgresql:
     image: postgres
     restart: always
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
     expose:
       - 5433
     ports:
@@ -32,9 +35,9 @@ services:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.0.3
     environment:
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_USER: manager
-      POSTGRES_DB: user_manager
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_USER: "manager"
+      POSTGRES_DB: "user_manager"
     command: -p 5433
 #MONITORING
   grafana:
@@ -82,24 +85,24 @@ services:
           cpus: '0.5'
           memory: '200M'
     environment:
-      SERVER_ADDRESS: "10.5.0.3"
+      SERVER_ADDRESS: "10.5.2.1"
       SERVER_PORT: "8081"
-      MANAGEMENT_SERVER_PORT: "8090"
+      MANAGEMENT_SERVER_PORT: "8990"
       SPRING_PROFILES_ACTIVE: "DEV"
       SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.0.4:8082"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_NAME: "@project.artifactId@"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_ENABLED: "true"
     expose:
       - 8081
-      - 8090
+      - 8990
     ports:
       - 8081:8081
-      - 8090:8090
+      - 8990:8990
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.2.1
   user-manger:
-    image: user-manger-java17:0.0.1-SNAPSHOT
+    image: user-manager-java17:0.0.1-SNAPSHOT
     restart: always
     deploy:
       resources:
@@ -107,19 +110,19 @@ services:
           cpus: '0.5'
           memory: '200M'
     environment:
-      SERVER_ADDRESS: "10.5.0.3"
-      SERVER_PORT: "8081"
-      MANAGEMENT_SERVER_PORT: "8090"
+      SERVER_ADDRESS: "10.5.2.2"
+      SERVER_PORT: "8083"
+      MANAGEMENT_SERVER_PORT: "8991"
       SPRING_PROFILES_ACTIVE: "DEV"
       SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.0.4:8082"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_NAME: "@project.artifactId@"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_ENABLED: "true"
     expose:
-      - 8082
-      - 8090
+      - 8083
+      - 8991
     ports:
-      - 8082:8082
-      - 8090:8090
+      - 8083:8083
+      - 8991:8991
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.2.2
@@ -132,15 +135,14 @@ services:
           cpus: '0.5'
           memory: '200M'
     expose:
-      - 8083
+      - 8082
     ports:
-      - 8083:8083
-      - 8090:8090
+      - 8082:8082
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.2.3
     environment:
-      SERVER_ADDRESS: "10.5.2.2"
+      SERVER_ADDRESS: "10.5.2.3"
       SERVER_PORT: "8082"
 networks:
   lan-java-mongo-prometheus-grafana:

@@ -1,6 +1,11 @@
+messenger:
+  username-manager: http://localhost:8083/user/manager/validate
 spring:
-  datasource:
-    driver-class-name:
+  data:
+    mongodb:
+      host: 10.5.0.2
+      port: 27018
+      database: messenger
   jmx:
     enabled: true
     unique-names: true
