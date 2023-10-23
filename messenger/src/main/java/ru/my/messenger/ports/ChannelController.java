@@ -8,6 +8,7 @@ import ru.my.messenger.app.command.CommandChannel;
 import ru.my.messenger.app.query.QueryChannel;
 import ru.my.messenger.messenger.model.dto.ChannelDTO;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 
 @RestController
@@ -16,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 public class ChannelController {
     private final QueryChannel query;
     private final CommandChannel command;
-    @GetMapping("/")
+    @GetMapping
     public Flux<ChannelDTO> getAll(){
         return query.findAll();
     }
@@ -31,7 +32,7 @@ public class ChannelController {
         return query.findByName(name);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = APPLICATION_JSON_VALUE)
     public void addChannel(@RequestBody Mono<ChannelDTO> body, @RequestHeader String token){
         command.add(body, token);
     }

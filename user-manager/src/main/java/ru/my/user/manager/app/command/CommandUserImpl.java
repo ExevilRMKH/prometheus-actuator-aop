@@ -1,5 +1,6 @@
 package ru.my.user.manager.app.command;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.my.user.manager.adapters.persistents.UserRepository;
@@ -13,6 +14,7 @@ import static ru.my.user.manager.app.exception.ExceptionMessages.NOT_USER_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Observed(name = "user_manager.command")
 public class CommandUserImpl implements CommandUser{
     private final UserRepository repository;
     @Override

@@ -2,7 +2,7 @@
 docker-file-build-all: maven docker-build-messenger docker-build-spring-admin docker-build-user-manager
 docker-file-build-messenger: maven docker-build-messenger
 docker-file-build-spring-admin: maven docker-build-spring-admin
-docker-file-build-spring-admin: maven docker-build-user-manager
+docker-file-build-user-manager: maven docker-build-user-manager
 
 maven::
 	mvn clean install

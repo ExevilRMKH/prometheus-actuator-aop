@@ -10,5 +10,5 @@ public interface QueryUser {
     Flux<UserDTO> getAll();
     Mono<UserDTO> getById(UUID uuid);
     String getTokenByLoginAndUuid(String login,UUID uuid);
-    void validateToken(UUID uuid, String token);
+    void validateToken(String token);
 }

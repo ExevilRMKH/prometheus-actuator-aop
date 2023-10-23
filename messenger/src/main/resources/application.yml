@@ -1,11 +1,18 @@
 messenger:
-  username-manager: http://localhost:8083/user/manager/validate
+  username-manager: http://localhost:8083/manager/validate/
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 spring:
   data:
     mongodb:
-      host: 10.5.0.2
-      port: 27018
-      database: messenger
+      database: test
+      username: messenger
+      password: 1234
+      authentication-database: test
+      uri: mongodb://10.5.0.2:27018/messenger
   jmx:
     enabled: true
     unique-names: true

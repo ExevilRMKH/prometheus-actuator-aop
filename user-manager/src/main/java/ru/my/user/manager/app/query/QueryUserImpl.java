@@ -1,5 +1,6 @@
 package ru.my.user.manager.app.query;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,6 +20,7 @@ import static ru.my.user.manager.app.exception.ExceptionMessages.NOT_USER_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Observed(name = "user_manager.query")
 public class QueryUserImpl implements QueryUser{
     private final UserRepository repository;
     private final UserManager manager;
@@ -28,6 +30,7 @@ public class QueryUserImpl implements QueryUser{
     }
 
     @Override
+
     public Mono<UserDTO> getById(UUID uuid) {
         return Mono.fromCallable(() ->
                 repository
@@ -50,10 +53,7 @@ public class QueryUserImpl implements QueryUser{
     }
 
     @Override
-    public void validateToken(UUID uuid, String token) {
-        if(repository.findById(uuid).isEmpty())
-            throw new NotFoundException(NOT_USER_FOUND);
-
+    public void validateToken(String token) {
         if(manager.validateToken(token))
             return;
 

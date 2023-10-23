@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Component
 @Validated
 @Slf4j
+@Observed(name = "user_manager.jwt.provider")
 class JwtProvider {
     private final SecretKey jwtAccessSecret;
     private final int lifeTimeTokenAccess;

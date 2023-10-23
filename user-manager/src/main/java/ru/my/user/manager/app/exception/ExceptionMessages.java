@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionMessages {
     public static final String NOT_USER_FOUND = "user not found";
-    public static final String INVALID_TOKEN = "user not found";
+    public static final String INVALID_TOKEN = "invalid token";
 }

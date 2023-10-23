@@ -4,9 +4,9 @@ version: '3.1'
 services:
 #PERSISTENT STORAGE
   mongo:
-    image: mongo:latest
+    image: mongodb/mongodb-community-server:latest
     container_name: mongo
-    restart: always
+    restart: on-failure
     expose:
       - 27018
     ports:
@@ -14,13 +14,11 @@ services:
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.0.2
+    user: "0"
     volumes:
-      - ./data/mongo:/data/db
-      - ./data/mongo:/data/configdb
-    environment:
-      MONGODB_USER: "admin"
-      MONGODB_PASS: "1234"
-      MONGODB_DATABASE: "messenger"
+      - ./data/mongo:/data/db:rw
+      - ./data/mongo:/data/configdb:rw
+      - ./docker-entrypoint/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     command: mongod --port 27018
   postgresql:
     image: postgres
@@ -75,6 +73,8 @@ services:
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.1.2
+      local:
+        ipv4_address: 127.0.0.2
 #APPLICATION
   messenger:
     image: messenger-java17:0.0.1-SNAPSHOT
@@ -92,6 +92,20 @@ services:
       SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.0.4:8082"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_NAME: "@project.artifactId@"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_ENABLED: "true"
+      MANAGEMENT_HEALTH_DISKSPACE: "true"
+      MANAGEMENT_INFO_ENV_ENABLED: "true"
+      MANAGEMENT_INFO_GIT_MODE: "full"
+      MANAGEMENT_INFO_GIT_ENABLED: "true"
+      MANAGEMENT_INFO_OS_ENABLED: "true"
+      MANAGEMENT_INFO_BUILD_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILDS: "always"
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_INFO_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: "true"
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_JMX_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_METRICS_ENABLE_ALL: "true"
+      MANAGEMENT_INFO_ENABLED: "true"
     expose:
       - 8081
       - 8990
@@ -110,13 +124,43 @@ services:
           cpus: '0.5'
           memory: '200M'
     environment:
+      SPRING_DATASOURCE_USERNAME: "manager"
+      SPRING_DATASOURCE_PASSWORD: "1234"
+      SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT: "50000"
+      SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT: "300000"
+      SPRING_DATASOURCE_HIKARI_MAX-LIFETIME: "900000"
+      SPRING_DATASOURCE_HICKARI_MAXIMUM-POOL-SIZE: "3"
+      SPRING_DATASOURCE_HICKARI_MINIMUM-IDLE: "1"
+      SPRING_DATASOURCE_HICKARI_POOL-NAME: "UserManagerPool"
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: "org.postgresql.Driver"
+      SPRING_DATASOURCE_TYPE: "com.zaxxer.hikari.HikariDataSource"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://10.5.0.3:5433/user_manager"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+      SPRING_JPA_HIBERNATE_DLL-AUTO: "update"
+      SPRING_JPA_HIBERNATE_CONNECTION_PROVIDER_CLASS: "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
+      SPRING_JPA_SHOW-SQL: "true"
+      JWT_SECRET_ACCESS: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w"
+      JWT_SECRET_LIFE-TIME: "100"
       SERVER_ADDRESS: "10.5.2.2"
       SERVER_PORT: "8083"
       MANAGEMENT_SERVER_PORT: "8991"
       SPRING_PROFILES_ACTIVE: "DEV"
-      SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.0.4:8082"
-      SPRING_BOOT_ADMIN_CLIENT_INSTACE_NAME: "@project.artifactId@"
+      SPRING_BOOT_ADMIN_CLIENT_URL: "http://10.5.2.3:8082"
       SPRING_BOOT_ADMIN_CLIENT_INSTACE_ENABLED: "true"
+      MANAGEMENT_HEALTH_DISKSPACE: "true"
+      MANAGEMENT_INFO_ENV_ENABLED: "true"
+      MANAGEMENT_INFO_GIT_MODE: "full"
+      MANAGEMENT_INFO_GIT_ENABLED: "true"
+      MANAGEMENT_INFO_OS_ENABLED: "true"
+      MANAGEMENT_INFO_BUILD_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILDS: "always"
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_INFO_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: "true"
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_JMX_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_METRICS_ENABLE_ALL: "true"
+      MANAGEMENT_INFO_ENABLED: "true"
     expose:
       - 8083
       - 8991
@@ -126,6 +170,7 @@ services:
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.2.2
+
   spring-boot-admin:
     image: spring-boot-admin-java17:0.0.1-SNAPSHOT
     restart: always
@@ -144,6 +189,20 @@ services:
     environment:
       SERVER_ADDRESS: "10.5.2.3"
       SERVER_PORT: "8082"
+      MANAGEMENT_HEALTH_DISKSPACE: "true"
+      MANAGEMENT_INFO_ENV_ENABLED: "true"
+      MANAGEMENT_INFO_GIT_MODE: "full"
+      MANAGEMENT_INFO_GIT_ENABLED: "true"
+      MANAGEMENT_INFO_OS_ENABLED: "true"
+      MANAGEMENT_INFO_BUILD_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILDS: "always"
+      MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_INFO_ENABLED: "true"
+      MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED: "true"
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_JMX_EXPOSURE_INCLUDE: "*"
+      MANAGEMENT_ENDPOINTS_METRICS_ENABLE_ALL: "true"
+      MANAGEMENT_INFO_ENABLED: "true"
 networks:
   lan-java-mongo-prometheus-grafana:
     driver: bridge
@@ -151,4 +210,5 @@ networks:
       config:
       - subnet: 10.5.0.0/16
         gateway: 10.5.0.1
-
+  local:
+    driver: host

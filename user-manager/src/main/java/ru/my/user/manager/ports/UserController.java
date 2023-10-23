@@ -47,9 +47,9 @@ public class UserController {
         return query.getTokenByLoginAndUuid(login, UUID.fromString(uuid));
     }
 
-    @GetMapping("/validate/{uuid}/{token}")
-    public void tokenValidate(@PathVariable String uuid, @PathVariable String token){
-        query.validateToken(UUID.fromString(uuid), token);
+    @GetMapping("/validate/{token}")
+    public void tokenValidate(@PathVariable String token){
+        query.validateToken(token);
     }
 
 }

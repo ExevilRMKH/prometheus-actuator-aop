@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @SpringBootApplication
 @EnableConfigurationProperties
 @EnableReactiveMongoRepositories
-public class AopMonitoringApplication {
+public class MessengerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AopMonitoringApplication.class, args);
+        SpringApplication.run(MessengerApplication.class, args);
     }
 
 }
