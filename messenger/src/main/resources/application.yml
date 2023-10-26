@@ -1,11 +1,31 @@
+messenger:
+  username-manager: http://10.5.2.2:8083/manager/validate/
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 spring:
+  data:
+    mongodb:
+      database: test
+      username: messenger
+      password: 1234
+      authentication-database: test
+      uri: mongodb://10.5.0.2:27018/messenger
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://10.5.2.2:8083/manager/validate/
+
   jmx:
     enabled: true
     unique-names: true
   boot:
     admin:
       client:
-        url: "http://localhost:8081"
+        url: "http://10.5.2.3:8082"
         instance:
           name: "@project.artifactId@"
         enabled: true
