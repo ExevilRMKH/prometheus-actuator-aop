@@ -6,12 +6,14 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.UUID;
+
 @Document
 @Setter
 @Getter
 @Builder
 public class ChannelEntity {
     @Id
-    private String uid;
+    private UUID uid;
     private String name;
 }

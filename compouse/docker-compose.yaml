@@ -37,7 +37,21 @@ services:
       POSTGRES_USER: "manager"
       POSTGRES_DB: "user_manager"
     command: -p 5433
-#MONITORING
+  pg_export:
+    image: bitnami/postgres-exporter:latest
+    container_name: postgres-exporter
+    expose:
+      - 9187
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://manager:1234@10.5.0.3:5433/user_manager?sslmode=disable"
+    networks:
+      lan-java-mongo-prometheus-grafana:
+        ipv4_address: 10.5.0.4
+    volumes:
+      - ./postgres_exporter.yml:/opt/bitnami/postgres-exporter/postgres_exporter.yml:ro
+      #MONITORING
   grafana:
     image: grafana/grafana-enterprise:latest
     container_name: grafana
@@ -65,6 +79,9 @@ services:
     hostname: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+    expose:
+      - 8090
+      - 8091
     ports:
       - 9090:9090
     restart: unless-stopped
@@ -73,8 +90,6 @@ services:
     networks:
       lan-java-mongo-prometheus-grafana:
         ipv4_address: 10.5.1.2
-      local:
-        ipv4_address: 127.0.0.2
 #APPLICATION
   messenger:
     image: messenger-java17:0.0.1-SNAPSHOT
@@ -106,9 +121,6 @@ services:
       MANAGEMENT_ENDPOINTS_JMX_EXPOSURE_INCLUDE: "*"
       MANAGEMENT_ENDPOINTS_METRICS_ENABLE_ALL: "true"
       MANAGEMENT_INFO_ENABLED: "true"
-    expose:
-      - 8081
-      - 8990
     ports:
       - 8081:8081
       - 8990:8990
@@ -129,14 +141,15 @@ services:
       SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT: "50000"
       SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT: "300000"
       SPRING_DATASOURCE_HIKARI_MAX-LIFETIME: "900000"
-      SPRING_DATASOURCE_HICKARI_MAXIMUM-POOL-SIZE: "3"
-      SPRING_DATASOURCE_HICKARI_MINIMUM-IDLE: "1"
+      SPRING_DATASOURCE_HICKARI_MAXIMUM-POOL-SIZE: "5"
+      SPRING_DATASOURCE_HICKARI_MINIMUM-IDLE: "3"
       SPRING_DATASOURCE_HICKARI_POOL-NAME: "UserManagerPool"
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: "org.postgresql.Driver"
       SPRING_DATASOURCE_TYPE: "com.zaxxer.hikari.HikariDataSource"
       SPRING_DATASOURCE_URL: "jdbc:postgresql://10.5.0.3:5433/user_manager"
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
       SPRING_JPA_HIBERNATE_DLL-AUTO: "update"
+      SPRING_JPA_PROPERTIES_HIBERNATE_GENERATE_STATISTICS: "true"
       SPRING_JPA_HIBERNATE_CONNECTION_PROVIDER_CLASS: "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
       SPRING_JPA_SHOW-SQL: "true"
       JWT_SECRET_ACCESS: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w"
@@ -161,9 +174,8 @@ services:
       MANAGEMENT_ENDPOINTS_JMX_EXPOSURE_INCLUDE: "*"
       MANAGEMENT_ENDPOINTS_METRICS_ENABLE_ALL: "true"
       MANAGEMENT_INFO_ENABLED: "true"
-    expose:
-      - 8083
-      - 8991
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: "TRACE"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_HTTP: "TRACE"
     ports:
       - 8083:8083
       - 8991:8991
@@ -179,8 +191,6 @@ services:
         limits:
           cpus: '0.5'
           memory: '200M'
-    expose:
-      - 8082
     ports:
       - 8082:8082
     networks:
@@ -210,5 +220,3 @@ networks:
       config:
       - subnet: 10.5.0.0/16
         gateway: 10.5.0.1
-  local:
-    driver: host

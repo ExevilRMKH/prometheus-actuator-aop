@@ -2,7 +2,9 @@ package ru.my.user.manager.app.query;
 
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -15,7 +17,6 @@ import ru.my.user.manager.users.model.mapper.UserMapper;
 
 import java.util.UUID;
 
-import static ru.my.user.manager.app.exception.ExceptionMessages.INVALID_TOKEN;
 import static ru.my.user.manager.app.exception.ExceptionMessages.NOT_USER_FOUND;
 
 @Service
@@ -57,6 +58,6 @@ public class QueryUserImpl implements QueryUser{
         if(manager.validateToken(token))
             return;
 
-        throw new UserManagerException(INVALID_TOKEN);
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 }

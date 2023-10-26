@@ -5,7 +5,9 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import reactor.core.publisher.Mono;
 import ru.my.messenger.messenger.model.entity.ChannelEntity;
 
+import java.util.UUID;
+
 @EnableReactiveMongoRepositories
-public interface ChannelRepository extends ReactiveMongoRepository<ChannelEntity, String> {
+public interface ChannelRepository extends ReactiveMongoRepository<ChannelEntity, UUID> {
     Mono<ChannelEntity> findChannelEntityByName(String name);
 }

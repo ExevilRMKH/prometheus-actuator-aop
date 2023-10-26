@@ -8,6 +8,8 @@ import ru.my.messenger.app.command.CommandChannel;
 import ru.my.messenger.app.query.QueryChannel;
 import ru.my.messenger.messenger.model.dto.ChannelDTO;
 
+import java.util.UUID;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 
@@ -24,7 +26,7 @@ public class ChannelController {
 
     @GetMapping("/id/{id}")
     public Mono<ChannelDTO> getChannelById(@PathVariable String id){
-        return query.findById(id);
+        return query.findById(UUID.fromString(id));
     }
 
     @GetMapping("/name/{name}")
@@ -33,17 +35,17 @@ public class ChannelController {
     }
 
     @PostMapping(value = "/add", consumes = APPLICATION_JSON_VALUE)
-    public void addChannel(@RequestBody Mono<ChannelDTO> body, @RequestHeader String token){
-        command.add(body, token);
+    public Mono<UUID> addChannel(@RequestBody Mono<ChannelDTO> body){
+        return command.add(body);
     }
 
     @PatchMapping("/owner/{uuid}")
-    public void changeOwner(@PathVariable Mono<String> uuid, @RequestHeader String token){
-        command.changeOwner(uuid, token);
+    public Mono<Void> changeOwner(@PathVariable Mono<String> uuid, @RequestHeader String token){
+        return command.changeOwner(uuid, token);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Mono<String> id, @RequestHeader String token){
-        command.changeOwner(id, token);
+    public Mono<Void> delete(@PathVariable Mono<String> id, @RequestHeader String token){
+        return command.changeOwner(id, token);
     }
 }

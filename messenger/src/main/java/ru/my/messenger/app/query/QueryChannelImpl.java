@@ -9,6 +9,8 @@ import ru.my.messenger.adapters.persistents.mongo.ChannelRepository;
 import ru.my.messenger.messenger.model.dto.ChannelDTO;
 import ru.my.messenger.messenger.model.mappers.ChannelMapper;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 @Observed(name = "query-message-service")
@@ -20,7 +22,7 @@ public class QueryChannelImpl implements QueryChannel{
     }
 
     @Override
-    public Mono<ChannelDTO> findById(String id) {
+    public Mono<ChannelDTO> findById(UUID id) {
         return repository.findById(id).map(ChannelMapper::fromEntityToDTO);
     }
 

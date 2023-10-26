@@ -4,16 +4,20 @@ global:
 scrape_configs:
   - job_name: 'messenger-java17'
     metrics_path: /actuator/prometheus
+    scrape_interval: 5s
     static_configs:
       - targets: ['10.5.2.1:8990']
   - job_name: 'user-manager-java17'
     metrics_path: /actuator/prometheus
+    scrape_interval: 5s
     static_configs:
       - targets: [ '10.5.2.2:8991','local:8091' ]
   - job_name: 'spring-boot-admin-java17'
     metrics_path: /actuator/prometheus
+    scrape_interval: 5s
     static_configs:
       - targets: [ '10.5.2.3:8090' ]
   - job_name: postgres
+    scrape_interval: 5s
     static_configs:
-      - targets: [ 'local:9187' ]
+      - targets: [ '10.5.0.4:9187' ]
